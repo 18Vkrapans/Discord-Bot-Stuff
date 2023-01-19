@@ -1,0 +1,33 @@
+import discord
+import datetime
+
+client = discord.Client()
+
+# A dictionary to store the playtime data
+playtime_data = {}
+
+@client.event
+async def on_message(message):
+    # Only respond to messages sent by the user
+    if message.author != client.user:
+        return
+
+    # Check if the message starts with the command prefix
+    if message.content.startswith("!playtime"):
+        # Get the current date
+        today = datetime.datetime.now().date()
+
+        # Check if there is already an entry for today's date
+        if today in playtime_data:
+            playtime_data[today] += 1
+        else:
+            playtime_data[today] = 1
+
+        # Get the total playtime for the week
+        total_playtime = sum(playtime_data.values())
+        average_playtime = total_playtime / len(playtime_data)
+        
+        await message.channel.send(f"You have played Rainbow Six Siege for {playtime_data[today]} hours today. The average playtime for this week is {average_playtime}")
+
+# Replace YOUR_BOT_TOKEN with your actual bot token
+client.run("YOUR_BOT_TOKEN")
